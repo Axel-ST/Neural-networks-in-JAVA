@@ -2,13 +2,13 @@
  * Created by Axel_ST on 25/01/2023
  */
 
-public class PerceptronNetwork {
+public class SigmoidNetwork {
     private final int BIAS = 0;
     private final int WEIGHTS = 0;
     private int numLayers;
     private int[] sizes;
     
-    public PerceptronNetwork(int... sizes) {
+    public SigmoidNetwork(int... sizes) {
         this.sizes = sizes;
         this.numLayers = sizes.length;
     }
@@ -32,7 +32,7 @@ public class PerceptronNetwork {
     }
     
     public static void main(String[] args) {
-        PerceptronNetwork net = new PerceptronNetwork(2, 3, 2);
+        SigmoidNetwork net = new SigmoidNetwork(2, 3, 2);
         int[] inputs = {1, 0};
         int[] outputs = net.feedForward(inputs);
         
