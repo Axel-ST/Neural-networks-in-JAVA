@@ -1,6 +1,8 @@
 /*
- * Created by Axel_ST on 25/01/2023
+ * Created by Axel_ST on 06/02/2023
  */
+
+package part_3;
 
 public class SigmoidNetwork {
     private final double BIAS = 1;
@@ -17,8 +19,8 @@ public class SigmoidNetwork {
         double[] outputs = null;
         for (int i = 1; i < numLayers; i++) {
             int size = sizes[i];
-            int[] z = new int [size];
-            outputs = new double [size];
+            int[] z = new int[size];
+            outputs = new double[size];
             for (int j = 0; j < size; j++) {
                 for (double input : inputs) {
                     z[j] += WEIGHTS * input;
@@ -35,7 +37,7 @@ public class SigmoidNetwork {
         SigmoidNetwork net = new SigmoidNetwork(2, 3, 2);
         double[] inputs = {1, 0};
         double[] outputs = net.feedForward(inputs);
-    
+        
         for (double output : outputs) {
             System.out.println(output);
         }
