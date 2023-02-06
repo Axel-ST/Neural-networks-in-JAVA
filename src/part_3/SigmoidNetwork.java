@@ -4,42 +4,74 @@
 
 package part_3;
 
+import org.jblas.DoubleMatrix;
+
 public class SigmoidNetwork {
-    private final double BIAS = 1;
-    private final double WEIGHTS = 3;
     private int numLayers;
     private int[] sizes;
     
-    public SigmoidNetwork(int... sizes) {
+    private DoubleMatrix[] weights;
+    private DoubleMatrix[] biases;
+    
+    public SigmoidNetwork(int... sizes) { //constructor
         this.sizes = sizes;
         this.numLayers = sizes.length;
+        
+        this.weights = new DoubleMatrix[sizes.length - 1];
+        this.biases = new DoubleMatrix[sizes.length - 1];
+        
+        // storing weights
+        
+        for (int i = 1; i < sizes.length; i++) { // checking each layer except input layer
+            double[][] temp = new double[sizes[i]][];
+            for (int j = 0; j < sizes[i]; j++) { // each neuron in layer
+                double[] w = new double[sizes[i - 1]];
+                for (int k = 0; k < sizes[i - 1]; k++) { // each neuron's connection to previous layer
+                    w[k] = 0; // constant value for checking
+                }
+                temp[j] = w; // storage of neuron's weights
+            }
+            weights[i - 1] = new DoubleMatrix(temp); // put weights into matrix
+        }
+        
+        // storing biases
+        
+        for (int i = 1; i < sizes.length; i++) { // checking each layer except input layer
+            double[][] temp = new double[sizes[i]][];
+            for (int j = 0; j < sizes[i]; j++) { // each neuron in layer
+                double[] b = new double[] {1}; // constant value for checking
+                temp[j] = b; // storage of neuron's biases
+            }
+            biases[i - 1] = new DoubleMatrix(temp); // put biases into matrix
+        }
     }
     
-    private double[] feedForward(double[] inputs) {
-        double[] outputs = null;
-        for (int i = 1; i < numLayers; i++) {
-            int size = sizes[i];
-            int[] z = new int[size];
-            outputs = new double[size];
-            for (int j = 0; j < size; j++) {
-                for (double input : inputs) {
-                    z[j] += WEIGHTS * input;
-                }
-                z[j] += BIAS;
-                outputs[j] = 1 / (1 + Math.exp(z[j]));
+    private DoubleMatrix feedForward(DoubleMatrix a) { // new method that work with matrices
+        for (int i = 0; i < numLayers - 1; i++) {
+            double[] z = new double[weights[i].rows];
+            for (int j = 0; j < weights[i].rows; j++) {
+                z[j] = weights[i].getRow(j).dot(a) + biases[i].get(j); // z = w * x + b
             }
-            inputs = outputs;
+            DoubleMatrix output = new DoubleMatrix(z);
+            a = sigmoid(output);
         }
-        return outputs;
+        return a;
     }
+    
+    private DoubleMatrix sigmoid(DoubleMatrix z) { // separate sigmiod activation function that works with matrices
+        double[] output = new double[z.length];
+        for (int i = 0; i < output.length; i++) {
+            output[i] = 1 / (1 + Math.exp(-z.get(i)));
+        }
+        return new DoubleMatrix(output);
+    }
+    
     
     public static void main(String[] args) {
         SigmoidNetwork net = new SigmoidNetwork(2, 3, 2);
-        double[] inputs = {1, 0};
-        double[] outputs = net.feedForward(inputs);
+        double[] inputs = {0, 0};
+        DoubleMatrix outputs = net.feedForward(new DoubleMatrix(inputs));
         
-        for (double output : outputs) {
-            System.out.println(output);
-        }
+        System.out.println(outputs.toString());
     }
 }
