@@ -21,23 +21,20 @@ public class SigmoidNetwork {
         this.biases = new DoubleMatrix[sizes.length - 1];
         
         // storing weights
-        for (int i = 1; i < sizes.length; i++) { // checking each layer except input layer
-            double[][] temp = new double[sizes[i]][];
-            for (int j = 0; j < sizes[i]; j++) { // each neuron in layer
-                double[] w = new double[sizes[i - 1]];
-                for (int k = 0; k < sizes[i - 1]; k++) { // each neuron's connection to previous layer
-                    w[k] = 0; // constant value for checking
-                }
-                temp[j] = w; // storage of neuron's weights
-            }
-            weights[i - 1] = new DoubleMatrix(temp); // put weights into matrix
-        }
+        final double WEIGHT = 31; // any positive value, more when bias
+        double[][] customWeights = new double[][] { // manually filled weights
+                {0, 0, 0, 0, 0, 0, 0, 0, WEIGHT, WEIGHT},
+                {0, 0, 0, 0, WEIGHT, WEIGHT, WEIGHT, WEIGHT, 0, 0},
+                {0, 0, WEIGHT, WEIGHT, 0, 0, WEIGHT, WEIGHT, 0, 0},
+                {0, WEIGHT, 0, WEIGHT, 0, WEIGHT, 0, WEIGHT, 0, WEIGHT}
+        };
+        weights[0] = new DoubleMatrix(customWeights); // put them in a matrix view
         
         // storing biases
         for (int i = 1; i < sizes.length; i++) { // checking each layer except input layer
             double[][] temp = new double[sizes[i]][];
             for (int j = 0; j < sizes[i]; j++) { // each neuron in layer
-                double[] b = new double[] {1}; // constant value for checking
+                double[] b = new double[] {-30}; // constant value for checking; any negative value
                 temp[j] = b; // storage of neuron's biases
             }
             biases[i - 1] = new DoubleMatrix(temp); // put biases into matrix
@@ -65,10 +62,10 @@ public class SigmoidNetwork {
     }
     
     public static void main(String[] args) {
-        SigmoidNetwork net = new SigmoidNetwork(2, 3, 2);
-        double[] inputs = {0, 0};
+        SigmoidNetwork net = new SigmoidNetwork(10, 4);
+        double[] inputs = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
         DoubleMatrix outputs = net.feedForward(new DoubleMatrix(inputs));
         
-        System.out.println(outputs.toString());
+        System.out.println(outputs.toString("%.0f"));
     }
 }
